@@ -1,287 +1,1425 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Controle de Provas - Psicologia</title>
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f3f3f3;
-        color: #222;
-    }header {
-    background: #ff4da6;
-    padding: 15px 20px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Intranet - Controle de Provas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-header h1 {
-    margin: 0;
-    font-size: 24px;
-}
+        :root {
+            /* valores iniciais - podem ser alterados no modal de configurações */
+            --color-primary: #2196F3;
+            --color-success: #4CAF50;
+            --color-warning: #FFC107;
+            --color-danger: #F44336;
+            --color-applied: #9E9E9E;
+            --color-bg: #f5f5f5;
+            --color-white: #ffffff;
+            --color-text: #333;
+            --color-border: #ddd;
+        }
 
-header h2 {
-    margin: 0;
-    font-size: 14px;
-    opacity: 0.8;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
 
-.config-btn {
-    background: black;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-}
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1976D2 100%);
+            color: var(--color-white);
+            padding: 20px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+        }
 
-.container {
-    padding: 20px;
-}
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-table {
-    width: 100%;
-    background: white;
-    border-collapse: collapse;
-    margin-top: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-}
+        header p {
+            font-size: 1em;
+            opacity: 0.95;
+        }
 
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-}
+        /* Top-right controls (logo + config) */
+        .header-controls {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
-th {
-    background: #333;
-    color: white;
-}
+        .logo-preview {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.status-normal { color: green; font-weight: bold; }
-.status-proximo { color: orange; font-weight: bold; }
-.status-aplicada { color: blue; font-weight: bold; }
-.status-atrasada { color: red; font-weight: bold; }
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
 
-/* Popup */
-.popup-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
 
-.popup {
-    background: white;
-    width: 90%;
-    max-width: 400px;
-    padding: 20px;
-    border-radius: 10px;
-}
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.popup input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
 
-.btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-}
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 1em;
+            background-color: var(--color-white);
+            transition: border-color 0.3s;
+        }
 
-.btn-save { background: #ff4da6; color: white; }
-.btn-close { background: #333; color: white; }
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 8px rgba(33, 150, 243, 0.2);
+        }
 
-</style>
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.2s;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        }
+
+        button.secondary {
+            background-color: #757575;
+        }
+
+        button.secondary:hover {
+            background-color: #616161;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-align: center;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .stat-card.applied {
+            border-left-color: var(--color-applied);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--color-warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--color-danger);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card .number {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-card.applied .number {
+            color: var(--color-applied);
+        }
+
+        .stat-card.warning .number {
+            color: var(--color-warning);
+        }
+
+        .stat-card.danger .number {
+            color: var(--color-danger);
+        }
+
+        .table-wrapper {
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #1976D2;
+            color: var(--color-white);
+        }
+
+        th {
+            padding: 14px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f9f9f9;
+            transition: background-color 0.15s;
+            cursor: pointer;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .status-aplicada {
+            background-color: #E0E0E0;
+            color: #424242;
+        }
+
+        .status-normal {
+            background-color: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .status-hoje {
+            background-color: #BBDEFB;
+            color: #0D47A1;
+        }
+
+        .status-urgente {
+            background-color: #FFEBEE;
+            color: #C62828;
+        }
+
+        .status-proximo {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .days-badge {
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background-color: #F5F5F5;
+            color: #333;
+            display: inline-block;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .days-badge.red {
+            background-color: #FFCDD2;
+            color: #C62828;
+        }
+
+        .days-badge.blue {
+            background-color: #BBDEFB;
+            color: #0D47A1;
+        }
+
+        .days-badge.yellow {
+            background-color: #FFF9C4;
+            color: #F57F17;
+        }
+
+        .days-badge.gray {
+            background-color: #EEEEEE;
+            color: #424242;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 1.05em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 22px;
+            border-radius: 8px;
+            max-width: 720px;
+            width: 100%;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            font-size: 1.25em;
+            font-weight: bold;
+            margin-bottom: 14px;
+            color: var(--color-primary);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            max-width: 160px;
+        }
+
+        .modal-buttons button.cancel {
+            background-color: #757575;
+        }
+
+        .modal-buttons button.cancel:hover {
+            background-color: #616161;
+        }
+
+        .export-btn {
+            background-color: #4CAF50;
+        }
+
+        .export-btn:hover {
+            background-color: #45a049;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .filter-section select {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* PASTAS e NOTAS */
+        .tabs {
+            display:flex;
+            gap:10px;
+            margin: 18px 0;
+            flex-wrap:wrap;
+        }
+        .tab-btn {
+            padding:8px 14px;
+            border-radius:6px;
+            background:#fff;
+            border:1px solid var(--color-border);
+            cursor:pointer;
+            font-weight:600;
+        }
+        .tab-btn.active {
+            background:var(--color-primary);
+            color:#fff;
+            border-color:var(--color-primary);
+        }
+
+        .pastas-wrapper, .notas-wrapper {
+            background: var(--color-white);
+            border-radius:8px;
+            padding:16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-top: 16px;
+        }
+
+        .file-item {
+            display:flex;
+            gap:10px;
+            align-items:center;
+            justify-content:space-between;
+            padding:8px;
+            border-bottom:1px solid var(--color-border);
+        }
+
+        .file-item:last-child { border-bottom:none; }
+
+        .file-meta { display:flex; gap:10px; align-items:center; flex:1; flex-wrap:wrap; }
+
+        .file-actions button {
+            margin-left:8px;
+            padding:6px 10px;
+            border-radius:6px;
+            border:none;
+            cursor:pointer;
+        }
+
+        .category-badge {
+            padding:4px 8px;
+            border-radius:6px;
+            background:#f1f1f1;
+            font-weight:700;
+            font-size:0.85em;
+        }
+
+        /* small screens */
+        @media (max-width: 992px) {
+            .container { padding: 0 14px; }
+            .modal-content { max-width: 92%; }
+            .stat-card .number { font-size:1.8em; }
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.4em; }
+            header p { font-size: 0.9em; }
+            .controls { flex-direction: column; }
+            .stats { grid-template-columns: 1fr; }
+            th, td { padding: 8px; }
+            .status-badge, .days-badge { min-width: 86px; font-size: 0.8em; }
+            .header-controls { top: 8px; right: 8px; gap: 6px; }
+            .logo-preview { width: 40px; height: 40px; }
+            .tabs { gap:8px; }
+            .file-item { flex-direction:column; align-items:flex-start; gap:6px; }
+            .file-actions { display:flex; gap:6px; }
+        }
+
+        @media (max-width: 420px) {
+            button { padding:10px 12px; font-size:0.95em; }
+            .tab-btn { padding:6px 10px; font-size:0.95em; }
+        }
+    </style>
 </head>
-<body><header>
-    <div>
-        <h1 id="titulo">Controle de Provas</h1>
-        <h2 id="subtitulo">Psicologia</h2>
+<body>
+    <header>
+        <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+            <h1 id="mainTitle">📋 Controle de Provas</h1>
+        </div>
+        <p id="subTitle">Intranet de Gestão de Avaliações</p>
+
+        <div class="header-controls">
+            <div class="logo-preview" id="logoPreview" title="Logo da instituição (clique para ver)">
+                <!-- logo será inserida dinamicamente -->
+            </div>
+            <button onclick="openConfig()" title="Configurações">⚙️</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Estatísticas -->
+        <div class="stats">
+            <div class="stat-card danger">
+                <h3>Urgente (1 dia)</h3>
+                <div class="number" id="countUrgent">0</div>
+            </div>
+            <div class="stat-card blue">
+                <h3>Hoje</h3>
+                <div class="number" id="countToday">0</div>
+            </div>
+            <div class="stat-card warning">
+                <h3>Próximas (>5 dias)</h3>
+                <div class="number" id="countUpcoming">0</div>
+            </div>
+            <div class="stat-card applied">
+                <h3>Aplicadas</h3>
+                <div class="number" id="countApplied">0</div>
+            </div>
+        </div>
+
+        <!-- Controles de Busca e Filtro -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar por disciplina, professor..." onkeyup="filterTable()">
+            </div>
+            <div class="buttons">
+                <select id="statusFilter" onchange="filterTable()">
+                    <option value="">Todos os Status</option>
+                    <option value="Aplicada">Aplicadas</option>
+                    <option value="Urgente">Urgente (1 dia)</option>
+                    <option value="Hoje">Hoje</option>
+                    <option value="Próximo">Próximo (>5 dias)</option>
+                </select>
+                <button class="export-btn" onclick="exportToCSV()">📥 Exportar CSV</button>
+                <button onclick="openAddForm()">➕ Adicionar</button>
+            </div>
+        </div>
+
+        <!-- Tabela de Provas -->
+        <div class="table-wrapper" id="provas-section">
+            <table id="provasTable" aria-describedby="Tabela de provas agendadas">
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>Professor</th>
+                        <th>Data da Avaliação</th>
+                        <th>Dias</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <div id="noResults" class="no-results" style="display:none;">
+                Nenhuma prova encontrada com esses critérios.
+            </div>
+        </div>
+
+        <!-- ABAS: Provas / Pastas / Notas -->
+        <div style="margin-top:18px;">
+            <div class="tabs" role="tablist" aria-label="Seções">
+                <button class="tab-btn active" id="tab-provas" onclick="switchTab('provas')">Provas</button>
+                <button class="tab-btn" id="tab-pastas" onclick="switchTab('pastas')">Pastas</button>
+                <button class="tab-btn" id="tab-notas" onclick="switchTab('notas')">Bloco de Notas</button>
+            </div>
+
+            <!-- PASTAS -->
+            <div id="pastas" class="pastas-wrapper" style="display:none;">
+                <h3>Pastas — enviar e abrir arquivos</h3>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:10px;">
+                    <div style="flex:1; min-width:220px;">
+                        <label for="categoriaDoc">Categoria</label>
+                        <select id="categoriaDoc">
+                            <option value="Declarações">Declarações</option>
+                            <option value="Atas">Atas</option>
+                            <option value="Documentos">Documentos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div style="flex:2; min-width:220px;">
+                        <label for="uploadDoc">Escolher arquivo(s)</label>
+                        <input type="file" id="uploadDoc" multiple>
+                    </div>
+                    <div style="display:flex; align-items:end;">
+                        <button onclick="salvarArquivos()">Salvar Arquivos</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:12px;">
+                    <input type="text" id="buscaArquivo" placeholder="🔎 Buscar arquivo..." oninput="carregarArquivos()" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--color-border);">
+                </div>
+
+                <div id="listaArquivos" style="margin-top:12px;">
+                    <!-- lista será inserida aqui -->
+                </div>
+            </div>
+
+            <!-- NOTAS -->
+            <div id="notas" class="notas-wrapper" style="display:none;">
+                <h3>Bloco de Notas — lembretes diários</h3>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:220px;">
+                        <label for="notaTitulo">Título (opcional)</label>
+                        <input type="text" id="notaTitulo" placeholder="Ex.: Lembrete imprimir prova">
+                    </div>
+                    <div style="flex:1; min-width:160px;">
+                        <label for="notaData">Data (opcional)</label>
+                        <input type="date" id="notaData">
+                    </div>
+                    <div style="flex-basis:100%; margin-top:10px;">
+                        <label for="blocoNotasArea">Anotações</label>
+                        <textarea id="blocoNotasArea" placeholder="Escreva suas anotações ou lembretes..." style="width:100%; min-height:140px; padding:10px; border-radius:6px; border:1px solid var(--color-border);"></textarea>
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="salvarBloco()">Salvar Anotação</button>
+                    <button class="secondary" onclick="limparBloco()">Limpar</button>
+                </div>
+
+                <div style="margin-top:18px;">
+                    <h4>Anotações salvas</h4>
+                    <div id="listaNotas" style="margin-top:8px;"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <button class="config-btn" onclick="abrirConfig()">⚙️ Configurações</button>
-</header><nav style="background:#222;padding:10px;display:flex;gap:15px;">
-    <a href="#" onclick="abrirAba('provas')" style="color:white;">Provas</a>
-    <a href="#" onclick="abrirAba('pastas')" style="color:white;">Pastas</a>
-    <a href="#" onclick="abrirAba('notas')" style="color:white;">Bloco de Notas</a>
-</nav><div class="container" id="aba-provas">
-    <table>
-        <thead>
-            <tr>
-                <th>Disciplina</th>
-                <th>Professor</th>
-                <th>Data</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="tabela"></tbody>
-    </table>
-</div><!-- POPUP DE CONFIGURAÇÃO --><div class="popup-bg" id="popup">
-    <div class="popup">
-        <h3>Configurações</h3>
-        <label>Título</label>
-        <input type="text" id="cfgTitulo"><label>Subtítulo</label>
-    <input type="text" id="cfgSubtitulo">
 
-    <label>Cor Primária</label>
-    <input type="color" id="cfgCor1">
+    <!-- Modal de Adicionar/Editar -->
+    <div class="modal" id="formModal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="formTitle">
+            <div class="modal-header" id="formTitle">Adicionar Nova Prova</div>
+            <form id="provaForm">
+                <div class="form-group">
+                    <label for="disciplina">Disciplina:</label>
+                    <input type="text" id="disciplina" required>
+                </div>
+                <div class="form-group">
+                    <label for="professor">Professor:</label>
+                    <input type="text" id="professor" required>
+                </div>
+                <div class="form-group">
+                    <label for="dataAvaliacao">Data da Avaliação:</label>
+                    <input type="date" id="dataAvaliacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="observacoes">Observações:</label>
+                    <textarea id="observacoes" placeholder="Adicione informações adicionais..."></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel" onclick="closeForm()">Cancelar</button>
+                    <button type="submit">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <label>Cor Secundária</label>
-    <input type="color" id="cfgCor2">
+    <!-- Modal de Configurações -->
+    <div class="modal" id="configModal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="configTitle">
+            <div class="modal-header" id="configTitle">Configurações</div>
+            <form id="configForm">
+                <div class="form-group">
+                    <label for="configTitleInput">Título (ex.: Controle de Provas):</label>
+                    <input type="text" id="configTitleInput">
+                </div>
+                <div class="form-group">
+                    <label for="configSubtitleInput">Subtítulo:</label>
+                    <input type="text" id="configSubtitleInput">
+                </div>
 
-    <button class="btn btn-save" onclick="salvarConfig()">Salvar</button>
-    <button class="btn btn-close" onclick="fecharConfig()">Fechar</button>
-</div>
+                <div class="form-group">
+                    <label for="colorPrimary">Cor principal (HEX):</label>
+                    <input type="text" id="colorPrimary" placeholder="#2196F3">
+                </div>
 
-</div><script>
-let provas = [
-    {disciplina:"Psicologia Social", professor:"Stephane Juliana", data:"2025-11-18", status:"Aplicada"},
-    {disciplina:"Psicofarmacologia", professor:"Renato Pennaforte", data:"2025-11-27", status:"Normal"},
-    {disciplina:"TTP Behaviorismo", professor:"Saulo de Tarso", data:"2025-12-12", status:"Próximo"}
-];
+                <div class="form-group">
+                    <label for="colorBg">Cor de fundo (HEX):</label>
+                    <input type="text" id="colorBg" placeholder="#f5f5f5">
+                </div>
 
-function carregarTabela() {
-    let tbody = document.getElementById("tabela");
-    tbody.innerHTML = "";
+                <div class="form-group">
+                    <label for="logoUpload">Logo da instituição (PNG/JPG) — será salva localmente no navegador:</label>
+                    <input type="file" id="logoUpload" accept="image/*">
+                    <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
+                        <div style="width:80px; height:80px; border:1px solid var(--color-border); border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center;" id="logoPreviewBig"></div>
+                        <div>
+                            <button type="button" onclick="removeLogo()" class="secondary">Remover logo</button>
+                        </div>
+                    </div>
+                </div>
 
-    provas.forEach(p => {
-        let linha = `<tr>
-            <td>${p.disciplina}</td>
-            <td>${p.professor}</td>
-            <td>${p.data}</td>
-            <td class="status-${p.status.toLowerCase()}">${p.status}</td>
-        </tr>`;
-        tbody.innerHTML += linha;
-    });
-}
-carregarTabela();
+                <div class="modal-buttons">
+                    <button type="button" class="cancel" onclick="closeConfig()">Cancelar</button>
+                    <button type="submit">Salvar Configurações</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-function abrirConfig() {
-    document.getElementById("cfgTitulo").value = localStorage.getItem("titulo") || "Controle de Provas";
-    document.getElementById("cfgSubtitulo").value = localStorage.getItem("subtitulo") || "Psicologia";
-    document.getElementById("cfgCor1").value = localStorage.getItem("cor1") || "#ff4da6";
-    document.getElementById("cfgCor2").value = localStorage.getItem("cor2") || "#000000";
+    <script>
+        /***************************************************************
+         * Estrutura de armazenamento:
+         *  - LocalStorage keys:
+         *      - 'controleProvas_provas'  -> array de provas
+         *      - 'controleProvas_settings' -> obj {title, subtitle, logoDataUrl, colors...}
+         *      - 'controleProvas_arquivos' -> array de {nome, conteudo(base64), categoria, uploadedAt}
+         *      - 'controleProvas_notas' -> array de notas {id, titulo, data, texto, savedAt}
+         ***************************************************************/
 
-    document.getElementById("popup").style.display = "flex";
-}
+        // Função utilitária para parsear datas no formato YYYY-MM-DD sem shift de fuso horário
+        function parseDateYMD(dateStr) {
+            if (!dateStr) return null;
+            // aceita 'YYYY-MM-DD' (como nas entradas)
+            const parts = String(dateStr).split('-').map(Number);
+            if (parts.length !== 3) return new Date(dateStr);
+            const [y, m, d] = parts;
+            return new Date(y, m - 1, d);
+        }
 
-function fecharConfig() {
-    document.getElementById("popup").style.display = "none";
-}
+        // Dados iniciais (se existir em localStorage, eles sobrescrevem estes)
+        let provas = [
+            { id: 1, disciplina: "PSICOLOGIA SOCIAL", professor: "STEPHANE JULIANA PEREIRA DA SILVA DE FIGUEIREDO", data: "2025-11-18" },
+            { id: 2, disciplina: "PSICOLOGIA ESCOLAR", professor: "ANNE NAYARA DE ALMEIDA ROCHA", data: "2025-11-18" },
+            { id: 3, disciplina: "PSICOFARMACOLOGIA", professor: "RENATO JABOUR PENNAFORTE", data: "2025-11-27" },
+            { id: 4, disciplina: "ÉTICA PROFISSIONAL EM PSICOLOGIA - MANHÃ", professor: "ANDRESSA PEREIRA LOPES", data: "2025-11-24" },
+            { id: 5, disciplina: "ÉTICA PROFISSIONAL EM PSICOLOGIA - NOITE", professor: "ANDRESSA PEREIRA LOPES", data: "2025-11-24" },
+            { id: 6, disciplina: "TEORIAS E TÉCNICAS PSICOTERÁPICAS: COGNITIVA", professor: "ANDRESSA PEREIRA LOPES", data: "2025-11-24" },
+            { id: 7, disciplina: "BASES BIOLÓGICAS DO COMPORTAMENTO", professor: "ANDRÉ FERNANDO DE OLIVEIRA FERMOSELI", data: "2025-11-24" },
+            { id: 8, disciplina: "BASES BIOLÓGICAS DO COMPORTAMENTO", professor: "ANDRÉ FERNANDO DE OLIVEIRA FERMOSELI", data: "2025-11-24" },
+            { id: 9, disciplina: "BASES BIOLÓGICAS DO COMPORTAMENTO", professor: "ANDRÉ FERNANDO DE OLIVEIRA FERMOSELI", data: "2025-11-24" },
+            { id: 10, disciplina: "BASES BIOLÓGICAS DO COMPORTAMENTO", professor: "ANDRÉ FERNANDO DE OLIVEIRA FERMOSELI", data: "2025-11-27" },
+            { id: 11, disciplina: "NEUROANATOMIA HUMANA", professor: "ANDRÉ FERNANDO DE OLIVEIRA FERMOSELI", data: "2025-11-24" },
+            { id: 12, disciplina: "Psicologia Experimental", professor: "ANDRESSA PEREIRA LOPES", data: "2025-11-18" },
+            { id: 13, disciplina: "PSICOLOGIA SOCIAL", professor: "WAGNER LEITE DE SOUZA", data: "2025-11-25" },
+            { id: 14, disciplina: "PSICOLOGIA E PROCESSOS DE GESTÃO", professor: "WAGNER LEITE DE SOUZA", data: "2025-12-01" },
+            { id: 15, disciplina: "DESENVOLVIMENTO PSICOSSEXUAL (MANHÃ)", professor: "WAGNER LEITE DE SOUZA", data: "2025-11-27" },
+            { id: 16, disciplina: "DESENVOLVIMENTO PSICOSSEXUAL (NOITE)", professor: "WAGNER LEITE DE SOUZA", data: "2025-11-25" },
+            { id: 17, disciplina: "TTP Behaviorismo", professor: "SAULO DE TARSO", data: "2025-12-12" },
+            { id: 18, disciplina: "TTP Behaviorismo", professor: "SAULO DE TARSO", data: "2025-12-05" },
+            { id: 19, disciplina: "TP Behaviorismo", professor: "SAULO DE TARSO", data: "2025-12-12" },
+            { id: 20, disciplina: "Estatística Aplicada M2.2", professor: "LUCYO WAGNER TORRES DE CARVALHO", data: "2025-11-25" },
+            { id: 21, disciplina: "Estatística Aplicada N1", professor: "LUCYO WAGNER TORRES DE CARVALHO", data: "2025-11-25" },
+            { id: 22, disciplina: "Estatística Aplicada N2", professor: "LUCYO WAGNER TORRES DE CARVALHO", data: "2025-11-25" },
+            { id: 23, disciplina: "FENÔMENOS E PROCESSOS PSICOLÓGICOS", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-12-01" },
+            { id: 24, disciplina: "PSICOLOGIA DO DESENVOLVIMENTO INFÂNCIA E ADOLESCÊNCIA", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-12-02" },
+            { id: 25, disciplina: "PSICOLOGIA DO DESENVOLVIMENTO INFÂNCIA E ADOLESCÊNCIA", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-12-03" },
+            { id: 26, disciplina: "PSICOLOGIA DO DESENVOLVIMENTO INFÂNCIA E ADOLESCÊNCIA", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-12-03" },
+            { id: 27, disciplina: "PSICOLOGIA DO DESENVOLVIMENTO ADULTO E IDOSO", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-12-04" },
+            { id: 28, disciplina: "PSICOLOGIA DO DESENVOLVIMENTO ADULTO E IDOSO", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-11-27" },
+            { id: 29, disciplina: "PSICOLOGIA DA SAÚDE", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-11-27" },
+            { id: 30, disciplina: "PSICOLOGIA DA SAÚDE", professor: "RAQUEL LIMA PEDROSA DE ALMEIDA", data: "2025-11-27" }
+        ];
 
-function salvarConfig() {
-    localStorage.setItem("titulo", document.getElementById("cfgTitulo").value);
-    localStorage.setItem("subtitulo", document.getElementById("cfgSubtitulo").value);
-    localStorage.setItem("cor1", document.getElementById("cfgCor1").value);
-    localStorage.setItem("cor2", document.getElementById("cfgCor2").value);
-
-    aplicarConfig();
-    fecharConfig();
-}
-
-function aplicarConfig() {
-    document.getElementById("titulo").innerText = localStorage.getItem("titulo") || "Controle de Provas";
-    document.getElementById("subtitulo").innerText = localStorage.getItem("subtitulo") || "Psicologia";
-
-    let cor1 = localStorage.getItem("cor1") || "#ff4da6";
-    let cor2 = localStorage.getItem("cor2") || "#000000";
-
-    document.querySelector("header").style.background = cor1;
-    document.querySelector(".config-btn").style.background = cor2;
-}
-
-aplicarConfig();
-</script><!-- ABA PASTAS --><div class="container" id="aba-pastas" style="display:none;">
-    <h2>Pastas</h2><label>Categoria:</label>
-<select id="categoriaDoc">
-    <option value="Declarações">Declarações</option>
-    <option value="Atas">Atas</option>
-    <option value="Documentos">Documentos</option>
-    <option value="Outros">Outros</option>
-</select>
-
-<input type="file" id="uploadDoc" multiple>
-<button class="btn btn-save" onclick="salvarArquivos()">Salvar Arquivos</button>
-
-<h3>Arquivos</h3>
-<input type="text" id="buscaArquivo" placeholder="Buscar arquivo..." oninput="carregarArquivos()" style="width:100%;padding:8px;margin:8px 0;">
-
-<ul id="listaArquivos"></ul>
-
-</div><!-- ABA NOTAS --><div class="container" id="aba-notas" style="display:none;">
-    <h2>Bloco de Notas</h2>
-    <textarea id="blocoNotas" style="width:100%;height:150px;"></textarea>
-    <button class="btn btn-save" onclick="salvarBloco()">Salvar Anotações</button>
-</div><script>
-function abrirAba(aba){
-    document.getElementById('aba-provas').style.display='none';
-    document.getElementById('aba-pastas').style.display='none';
-    document.getElementById('aba-notas').style.display='none';
-
-    document.getElementById('aba-'+aba).style.display='block';
-}
-
-// Salvar arquivos com categoria e base64
-function salvarArquivos() {
-    let arquivos = document.getElementById('uploadDoc').files;
-    let lista = JSON.parse(localStorage.getItem('arquivos') || '[]');
-    let categoria = document.getElementById('categoriaDoc').value;
-
-    Array.from(arquivos).forEach(arquivo => {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            lista.push({ nome: arquivo.name, conteudo: e.target.result, categoria: categoria });
-            localStorage.setItem('arquivos', JSON.stringify(lista));
-            carregarArquivos();
+        // Padrões de configurações
+        const defaultSettings = {
+            title: "📋 Controle de Provas",
+            subtitle: "Intranet de Gestão de Avaliações",
+            logoDataUrl: null,
+            colors: {
+                primary: getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#2196F3',
+                bg: getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim() || '#f5f5f5'
+            }
         };
-        reader.readAsDataURL(arquivo);
-    });
-}
 
-function carregarArquivos() {
-    let lista = JSON.parse(localStorage.getItem('arquivos') || '[]');
-    let ul = document.getElementById('listaArquivos');
-    let filtro = document.getElementById('buscaArquivo').value.toLowerCase();
+        // Carregar de localStorage (provas e settings)
+        function loadFromStorage() {
+            try {
+                const savedProvas = localStorage.getItem('controleProvas_provas');
+                if (savedProvas) provas = JSON.parse(savedProvas);
 
-    ul.innerHTML = '';
+                const savedSettings = localStorage.getItem('controleProvas_settings');
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                } else {
+                    settings = defaultSettings;
+                }
 
-    lista.filter(a => a.nome.toLowerCase().includes(filtro)).forEach(arq => {
-        ul.innerHTML += `<li><strong>[${arq.categoria}]</strong> <a href="${arq.conteudo}" download="${arq.nome}">${arq.nome}</a> <button onclick="deletarArquivo('${arq.nome}')">🗑</button></li>`;
-    });
-}
+                const savedArquivos = localStorage.getItem('controleProvas_arquivos');
+                if (!savedArquivos) {
+                    localStorage.setItem('controleProvas_arquivos', JSON.stringify([]));
+                }
 
-function deletarArquivo(nome){
-    let lista = JSON.parse(localStorage.getItem('arquivos') || '[]');
-    lista = lista.filter(a => a.nome !== nome);
-    localStorage.setItem('arquivos', JSON.stringify(lista));
-    carregarArquivos();
-}
+                const savedNotas = localStorage.getItem('controleProvas_notas');
+                if (!savedNotas) {
+                    localStorage.setItem('controleProvas_notas', JSON.stringify([]));
+                }
+            } catch (e) {
+                console.error("Erro ao carregar localStorage:", e);
+                settings = defaultSettings;
+            }
+        }
 
-// Bloco de notas
-function salvarBloco() {
-    localStorage.setItem('blocoNotas', document.getElementById('blocoNotas').value);
-}
+        // Salvar provas e settings
+        function saveProvasToStorage() {
+            localStorage.setItem('controleProvas_provas', JSON.stringify(provas));
+        }
+        function saveSettingsToStorage() {
+            localStorage.setItem('controleProvas_settings', JSON.stringify(settings));
+        }
 
-function carregarBloco() {
-    document.getElementById('blocoNotas').value = localStorage.getItem('blocoNotas') || '';
-}
+        // Estado atual
+        let settings = {};
+        loadFromStorage();
 
-carregarArquivos();
-carregarBloco();
-</script></body>
-</html>
+        // Aplica configurações na interface (título, subtítulo, cores, logo)
+        function applySettingsToUI() {
+            document.getElementById('mainTitle').innerHTML = settings.title || defaultSettings.title;
+            document.getElementById('subTitle').textContent = settings.subtitle || defaultSettings.subtitle;
+
+            // aplica cores
+            if (settings.colors && settings.colors.primary) {
+                document.documentElement.style.setProperty('--color-primary', settings.colors.primary);
+            }
+            if (settings.colors && settings.colors.bg) {
+                document.documentElement.style.setProperty('--color-bg', settings.colors.bg);
+            }
+
+            // logo preview
+            const logoPreview = document.getElementById('logoPreview');
+            const logoBig = document.getElementById('logoPreviewBig');
+            logoPreview.innerHTML = '';
+            logoBig.innerHTML = '';
+            if (settings.logoDataUrl) {
+                const img = document.createElement('img');
+                img.src = settings.logoDataUrl;
+                img.alt = 'Logo';
+                logoPreview.appendChild(img);
+
+                const img2 = document.createElement('img');
+                img2.src = settings.logoDataUrl;
+                img2.alt = 'Logo';
+                logoBig.appendChild(img2);
+            } else {
+                // placeholder
+                logoPreview.innerHTML = `<span title="Sem logo">🏫</span>`;
+                if (logoBig) logoBig.innerHTML = `<span style="opacity:0.6">Sem logo</span>`;
+            }
+        }
+
+        // Inicia as configurações aplicadas
+        applySettingsToUI();
+
+        // Editor / formulário
+        let editingId = null;
+
+        // Cálculo de dias (corrigido para evitar shift de fuso horário)
+        function calcularDias(data) {
+            const hoje = new Date();
+            hoje.setHours(0,0,0,0);
+            const dataProva = parseDateYMD(data);
+            if (!dataProva) return 0;
+            dataProva.setHours(0,0,0,0);
+            const diferenca = dataProva - hoje;
+            const dias = Math.round(diferenca / (1000 * 60 * 60 * 24));
+            return dias;
+        }
+
+        function obterStatus(dias) {
+            if (dias < 0) return "Aplicada";
+            if (dias === 0) return "Hoje";
+            if (dias === 1) return "Urgente";
+            if (dias > 5) return "Próximo";
+            return "Normal";
+        }
+
+        function obterClasseDias(dias) {
+            if (dias < 0) return "gray";
+            if (dias === 0) return "blue";
+            if (dias === 1) return "red";
+            if (dias > 5) return "yellow";
+            return "";
+        }
+
+        // Render da tabela (cada linha clicável para editar)
+        function renderTable(dadosFiltrados = provas) {
+            const tbody = document.getElementById("tableBody");
+            const noResults = document.getElementById("noResults");
+            tbody.innerHTML = "";
+
+            if (!dadosFiltrados || dadosFiltrados.length === 0) {
+                noResults.style.display = "block";
+                return;
+            }
+
+            noResults.style.display = "none";
+
+            dadosFiltrados.forEach(prova => {
+                const dias = calcularDias(prova.data);
+                const status = obterStatus(dias);
+                const classeDias = obterClasseDias(dias);
+
+                const tr = document.createElement('tr');
+
+                // torna a linha clicável para edição
+                tr.addEventListener('dblclick', () => editProva(prova.id));
+
+                const dataFormatada = (function(dstr){
+                    const d = parseDateYMD(dstr);
+                    if (!d) return '';
+                    return d.toLocaleDateString('pt-BR');
+                })(prova.data);
+
+                // Determina classe do status para o badge
+                let statusClass = 'status-normal';
+                if (status === 'Aplicada') statusClass = 'status-aplicada';
+                if (status === 'Hoje') statusClass = 'status-hoje';
+                if (status === 'Urgente') statusClass = 'status-urgente';
+                if (status === 'Próximo') statusClass = 'status-proximo';
+
+                tr.innerHTML = `
+                    <td><strong>${prova.disciplina}</strong></td>
+                    <td>${prova.professor}</td>
+                    <td>${dataFormatada}</td>
+                    <td><span class="days-badge ${classeDias}">${dias} dias</span></td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>
+                        <button style="padding:5px 10px; font-size:0.85em; background-color:#FF9800; color:#fff; margin-right:6px;" onclick="editProva(${prova.id})">✏️ Editar</button>
+                        <button style="padding:5px 10px; font-size:0.85em; background-color:#f44336; color:#fff;" onclick="deleteProva(${prova.id})">🗑️ Deletar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            updateStats(dadosFiltrados);
+        }
+
+        function updateStats(dadosFiltrados) {
+            const countUrgent = dadosFiltrados.filter(p => calcularDias(p.data) === 1).length;
+            const countToday = dadosFiltrados.filter(p => calcularDias(p.data) === 0).length;
+            const countUpcoming = dadosFiltrados.filter(p => calcularDias(p.data) > 5).length;
+            const countApplied = dadosFiltrados.filter(p => calcularDias(p.data) < 0).length;
+
+            document.getElementById("countUrgent").textContent = countUrgent;
+            document.getElementById("countToday").textContent = countToday;
+            document.getElementById("countUpcoming").textContent = countUpcoming;
+            document.getElementById("countApplied").textContent = countApplied;
+        }
+
+        // Filtro de tabela
+        function filterTable() {
+            const search = document.getElementById("searchInput").value.toLowerCase();
+            const statusFilter = document.getElementById("statusFilter").value;
+
+            let filtered = provas.filter(prova => {
+                const matchSearch = prova.disciplina.toLowerCase().includes(search) ||
+                                   prova.professor.toLowerCase().includes(search);
+
+                if (!statusFilter) return matchSearch;
+
+                const status = obterStatus(calcularDias(prova.data));
+                return matchSearch && status === statusFilter;
+            });
+
+            renderTable(filtered);
+        }
+
+        // Abrir formulário para adicionar
+        function openAddForm() {
+            editingId = null;
+            document.getElementById("formTitle").textContent = "Adicionar Nova Prova";
+            document.getElementById("provaForm").reset();
+            document.getElementById("formModal").classList.add("active");
+            document.getElementById("formModal").setAttribute('aria-hidden', 'false');
+        }
+
+        // Editar prova
+        function editProva(id) {
+            const prova = provas.find(p => p.id === id);
+            if (!prova) return;
+
+            editingId = id;
+            document.getElementById("formTitle").textContent = "Editar Prova";
+            document.getElementById("disciplina").value = prova.disciplina;
+            document.getElementById("professor").value = prova.professor;
+            document.getElementById("dataAvaliacao").value = prova.data;
+            document.getElementById("observacoes").value = prova.observacoes || '';
+            document.getElementById("formModal").classList.add("active");
+            document.getElementById("formModal").setAttribute('aria-hidden', 'false');
+        }
+
+        // Deletar prova
+        function deleteProva(id) {
+            if (confirm("Tem certeza que deseja deletar esta prova?")) {
+                provas = provas.filter(p => p.id !== id);
+                saveProvasToStorage();
+                filterTable();
+            }
+        }
+
+        // Fechar formulário
+        function closeForm() {
+            document.getElementById("formModal").classList.remove("active");
+            document.getElementById("formModal").setAttribute('aria-hidden', 'true');
+            editingId = null;
+        }
+
+        // Submissão do formulário (adicionar/editar)
+        document.getElementById("provaForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const disciplina = document.getElementById("disciplina").value.trim();
+            const professor = document.getElementById("professor").value.trim();
+            const data = document.getElementById("dataAvaliacao").value;
+            const observacoes = document.getElementById("observacoes").value.trim();
+
+            if (!disciplina || !professor || !data) {
+                alert("Preencha disciplina, professor e data.");
+                return;
+            }
+
+            if (editingId) {
+                const prova = provas.find(p => p.id === editingId);
+                if (prova) {
+                    prova.disciplina = disciplina;
+                    prova.professor = professor;
+                    prova.data = data;
+                    prova.observacoes = observacoes;
+                }
+            } else {
+                const newId = Math.max(...provas.map(p => p.id), 0) + 1;
+                provas.push({ id: newId, disciplina, professor, data, observacoes });
+            }
+
+            saveProvasToStorage();
+            closeForm();
+            filterTable();
+        });
+
+        // Exportar CSV (todos os itens atuais)
+        function exportToCSV() {
+            let csv = "Disciplina,Professor,Data da Avaliação,Dias para Avaliação,Status,Observações\n";
+
+            provas.forEach(prova => {
+                const dias = calcularDias(prova.data);
+                const status = obterStatus(dias);
+                const dataFormat = parseDateYMD(prova.data).toLocaleDateString('pt-BR');
+                const obs = prova.observacoes ? prova.observacoes.replace(/"/g, '""') : '';
+                csv += `"${prova.disciplina}","${prova.professor}","${dataFormat}","${dias}","${status}","${obs}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "controle_provas.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        /***********************
+         * Configurações (modal)
+         ***********************/
+        function openConfig() {
+            // preencher campos com settings atuais
+            document.getElementById('configTitleInput').value = settings.title || '';
+            document.getElementById('configSubtitleInput').value = settings.subtitle || '';
+            document.getElementById('colorPrimary').value = (settings.colors && settings.colors.primary) ? settings.colors.primary : '';
+            document.getElementById('colorBg').value = (settings.colors && settings.colors.bg) ? settings.colors.bg : '';
+
+            // logo preview (já está em applySettingsToUI)
+            applySettingsToUI();
+
+            document.getElementById('configModal').classList.add('active');
+            document.getElementById('configModal').setAttribute('aria-hidden', 'false');
+        }
+
+        function closeConfig() {
+            document.getElementById('configModal').classList.remove('active');
+            document.getElementById('configModal').setAttribute('aria-hidden', 'true');
+        }
+
+        // Upload da logo
+        const logoUpload = document.getElementById('logoUpload');
+        if (logoUpload) {
+            logoUpload.addEventListener('change', function(e){
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const dataUrl = evt.target.result;
+                    settings.logoDataUrl = dataUrl;
+                    saveSettingsToStorage();
+                    applySettingsToUI();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeLogo() {
+            if (confirm('Remover a logo da instituição?')) {
+                settings.logoDataUrl = null;
+                saveSettingsToStorage();
+                applySettingsToUI();
+            }
+        }
+
+        // Salvar configurações do modal
+        document.getElementById('configForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            const title = document.getElementById('configTitleInput').value.trim();
+            const subtitle = document.getElementById('configSubtitleInput').value.trim();
+            const primary = document.getElementById('colorPrimary').value.trim();
+            const bg = document.getElementById('colorBg').value.trim();
+
+            settings.title = title || defaultSettings.title;
+            settings.subtitle = subtitle || defaultSettings.subtitle;
+            settings.colors = settings.colors || {};
+            if (primary) settings.colors.primary = primary;
+            if (bg) settings.colors.bg = bg;
+
+            saveSettingsToStorage();
+            applySettingsToUI();
+            closeConfig();
+        });
+
+        /***********************
+         * PASTAS (upload / listar / abrir / deletar)
+         ***********************/
+        function salvarArquivos() {
+            const input = document.getElementById('uploadDoc');
+            const arquivos = input.files;
+            if (!arquivos || arquivos.length === 0) {
+                alert('Selecione um arquivo antes de salvar.');
+                return;
+            }
+            const categoria = document.getElementById('categoriaDoc').value || 'Outros';
+            let lista = JSON.parse(localStorage.getItem('controleProvas_arquivos') || '[]');
+
+            Array.from(arquivos).forEach(arquivo => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const conteudo = e.target.result; // base64 data url
+                    const entry = {
+                        id: Date.now() + Math.floor(Math.random()*1000),
+                        nome: arquivo.name,
+                        conteudo: conteudo,
+                        categoria: categoria,
+                        uploadedAt: new Date().toISOString()
+                    };
+                    lista.push(entry);
+                    localStorage.setItem('controleProvas_arquivos', JSON.stringify(lista));
+                    carregarArquivos();
+                };
+                reader.readAsDataURL(arquivo);
+            });
+
+            // limpa input
+            input.value = '';
+        }
+
+        function carregarArquivos() {
+            const lista = JSON.parse(localStorage.getItem('controleProvas_arquivos') || '[]');
+            const busca = (document.getElementById('buscaArquivo') ? document.getElementById('buscaArquivo').value.toLowerCase() : '').trim();
+            const container = document.getElementById('listaArquivos');
+            container.innerHTML = '';
+
+            const filtrada = lista.filter(a => {
+                if (!busca) return true;
+                return a.nome.toLowerCase().includes(busca) || a.categoria.toLowerCase().includes(busca);
+            });
+
+            if (filtrada.length === 0) {
+                container.innerHTML = '<div class="no-results">Nenhum arquivo encontrado.</div>';
+                return;
+            }
+
+            filtrada.sort((a,b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+
+            filtrada.forEach(arq => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `
+                    <div class="file-meta">
+                        <div style="min-width:36px; text-align:center;">📄</div>
+                        <div style="flex:1;">
+                            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                <div style="font-weight:700;">${arq.nome}</div>
+                                <div class="category-badge">${arq.categoria}</div>
+                            </div>
+                            <div style="font-size:0.85em; color:#666; margin-top:6px;">Enviado: ${new Date(arq.uploadedAt).toLocaleString('pt-BR')}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button onclick="abrirArquivo('${arq.id}')">Abrir</button>
+                        <button onclick="baixarArquivo('${arq.id}')">Baixar</button>
+                        <button style="background:#f44336;color:#fff;" onclick="deletarArquivo('${arq.id}')">Excluir</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function abrirArquivo(id) {
+            const lista = JSON.parse(localStorage.getItem('controleProvas_arquivos') || '[]');
+            const arq = lista.find(a => String(a.id) === String(id));
+            if (!arq) { alert('Arquivo não encontrado.'); return; }
+            // abre em nova guia usando data URL
+            const win = window.open();
+            if (!win) {
+                // popup bloqueado: abrir via link temporário e forçar download/abrir
+                const a = document.createElement('a');
+                a.href = arq.conteudo;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.click();
+                return;
+            }
+            win.document.write(`<iframe src="${arq.conteudo}" style="border:none; width:100%; height:100vh;"></iframe>`);
+            win.document.title = arq.nome;
+        }
+
+        function baixarArquivo(id) {
+            const lista = JSON.parse(localStorage.getItem('controleProvas_arquivos') || '[]');
+            const arq = lista.find(a => String(a.id) === String(id));
+            if (!arq) { alert('Arquivo não encontrado.'); return; }
+            const a = document.createElement('a');
+            a.href = arq.conteudo;
+            a.download = arq.nome;
+            a.click();
+        }
+
+        function deletarArquivo(id) {
+            if (!confirm('Deseja realmente excluir este arquivo?')) return;
+            let lista = JSON.parse(localStorage.getItem('controleProvas_arquivos') || '[]');
+            lista = lista.filter(a => String(a.id) !== String(id));
+            localStorage.setItem('controleProvas_arquivos', JSON.stringify(lista));
+            carregarArquivos();
+        }
+
+        /***********************
+         * NOTAS (bloco de notas / lembretes)
+         ***********************/
+        function salvarBloco() {
+            const titulo = document.getElementById('notaTitulo').value.trim();
+            const data = document.getElementById('notaData').value || null;
+            const texto = document.getElementById('blocoNotasArea').value.trim();
+
+            if (!texto) {
+                alert('Escreva algo antes de salvar.');
+                return;
+            }
+
+            let notas = JSON.parse(localStorage.getItem('controleProvas_notas') || '[]');
+            const novo = {
+                id: Date.now() + Math.floor(Math.random()*1000),
+                titulo: titulo || 'Sem título',
+                data: data,
+                texto: texto,
+                savedAt: new Date().toISOString()
+            };
+            notas.unshift(novo); // adiciona no topo
+            localStorage.setItem('controleProvas_notas', JSON.stringify(notas));
+            document.getElementById('notaTitulo').value = '';
+            document.getElementById('notaData').value = '';
+            document.getElementById('blocoNotasArea').value = '';
+            carregarNotas();
+        }
+
+        function carregarNotas() {
+            const lista = JSON.parse(localStorage.getItem('controleProvas_notas') || '[]');
+            const container = document.getElementById('listaNotas');
+            container.innerHTML = '';
+            if (!lista || lista.length === 0) {
+                container.innerHTML = '<div class="no-results">Nenhuma anotação.</div>';
+                return;
+            }
+            lista.forEach(n => {
+                const div = document.createElement('div');
+                div.style.borderBottom = '1px solid var(--color-border)';
+                div.style.padding = '8px 4px';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap;">
+                        <div>
+                            <strong>${n.titulo}</strong>
+                            <div style="font-size:0.85em; color:#666;">${n.data ? 'Para: '+(new Date(n.data)).toLocaleDateString('pt-BR') : ''} • Salvo: ${(new Date(n.savedAt)).toLocaleString('pt-BR')}</div>
+                            <div style="margin-top:6px; white-space:pre-wrap;">${n.texto}</div>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button onclick="editarNota('${n.id}')">✏️</button>
+                            <button style="background:#f44336;color:#fff;" onclick="deletarNota('${n.id}')">Excluir</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deletarNota(id) {
+            if (!confirm('Excluir anotação?')) return;
+            let notas = JSON.parse(localStorage.getItem('controleProvas_notas') || '[]');
+            notas = notas.filter(n => String(n.id) !== String(id));
+            localStorage.setItem('controleProvas_notas', JSON.stringify(notas));
+            carregarNotas();
+        }
+
+        function editarNota(id) {
+            const notas = JSON.parse(localStorage.getItem('controleProvas_notas') || '[]');
+            const nota = notas.find(n => String(n.id) === String(id));
+            if (!nota) return;
+            // preencher campos para edição (remoção do item antigo e re-salvar)
+            document.getElementById('notaTitulo').value = nota.titulo === 'Sem título' ? '' : nota.titulo;
+            document.getElementById('notaData').value = nota.data || '';
+            document.getElementById('blocoNotasArea').value = nota.texto;
+            deletarNota(id);
+            // foco no textarea
+            document.getElementById('blocoNotasArea').focus();
+        }
+
+        function limparBloco() {
+            if (!confirm('Limpar todos os campos do bloco de notas?')) return;
+            document.getElementById('notaTitulo').value = '';
+            document.getElementById('notaData').value = '';
+            document.getElementById('blocoNotasArea').value = '';
+        }
+
+        /**************************
+         * Navegação entre abas
+         **************************/
+        function switchTab(tab) {
+            // tabs: 'provas', 'pastas', 'notas'
+            document.getElementById('provas-section').style.display = (tab === 'provas') ? 'block' : 'none';
+            document.getElementById('pastas').style.display = (tab === 'pastas') ? 'block' : 'none';
+            document.getElementById('notas').style.display = (tab === 'notas') ? 'block' : 'none';
+
+            document.getElementById('tab-provas').classList.toggle('active', tab === 'provas');
+            document.getElementById('tab-pastas').classList.toggle('active', tab === 'pastas');
+            document.getElementById('tab-notas').classList.toggle('active', tab === 'notas');
+
+            // carregar conteúdo quando abrir
+            if (tab === 'pastas') carregarArquivos();
+            if (tab === 'notas') carregarNotas();
+            if (tab === 'provas') filterTable();
+
+            // pequena melhoria UX: rolar para área
+            setTimeout(() => {
+                const el = document.getElementById(tab === 'provas' ? 'provas-section' : (tab === 'pastas' ? 'pastas' : 'notas'));
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
+        }
+
+        /**************************
+         * Inicialização e binding
+         **************************/
+        (function init() {
+            // carrega provas/settings e aplica
+            loadFromStorage();
+            applySettingsToUI();
+            renderTable();
+
+            // click no preview da logo abre modal de configurações
+            const logoPreviewEl = document.getElementById('logoPreview');
+            if (logoPreviewEl) {
+                logoPreviewEl.addEventListener('click', openConfig);
+            }
+
+            // tornar o header título editável rapidamente (duplo clique)
+            const mainTitleEl = document.getElementById('mainTitle');
+            if (mainTitleEl) {
+                mainTitleEl.addEventListener('dblclick', () => {
+                    openConfig();
+                    setTimeout(() => {
+                        document.getElementById('configTitleInput').focus();
+                    }, 200);
+                });
+            }
+
+            // salvar automaticamente quando sair da página (opcional)
+            window.addEventListener('beforeunload', () => {
+                saveProvasToStorage();
+                saveSettingsToStorage();
+            });
+
+            // inicializar abas (abrir provas por padrão)
+            switchTab('provas');
+
+            // garantir que arquivos e notas existam no storage
+            if (!localStorage.getItem('controleProvas_arquivos')) localStorage.setItem('controleProvas_arquivos', JSON.stringify([]));
+            if (!localStorage.getItem('controleProvas_notas')) localStorage.setItem('controleProvas_notas', JSON.stringify([]));
+
+            // associações globais (para botões inline)
+            window.openAddForm = openAddForm;
+            window.editProva = editProva;
+            window.deleteProva = deleteProva;
+            window.filterTable = filterTable;
+            window.exportToCSV = exportToCSV;
+            window.openConfig = openConfig;
+            window.closeConfig = closeConfig;
+            window.removeLogo = removeLogo;
+            window.salvarArquivos = salvarArquivos;
+            window.carregarArquivos = carregarArquivos;
+            window.abrirArquivo = abrirArquivo;
+            window.baixarArquivo = baixarArquivo;
+            window.deletarArquivo = deletarArquivo;
+            window.salvarBloco = salvarBloco;
+            window.carregarNotas = carregarNotas;
+            window.deletarNota = deletarNota;
+            window.editarNota = editarNota;
+            window.limparBloco = limparBloco;
+            window.switchTab = switchTab;
+        })();
+
+        // Exibe tabela inicial filtrada
+        filterTable();
+
+    </script>
+</body>
+</html
