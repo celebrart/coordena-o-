@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,118 +9,117 @@
         font-family: Arial, sans-serif;
         background: #f3f3f3;
         color: #222;
-    }
+    }header {
+    background: #ff4da6;
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    header {
-        background: #ff4da6;
-        padding: 15px 20px;
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
 
-    header h1 {
-        margin: 0;
-        font-size: 24px;
-    }
+header h2 {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
 
-    header h2 {
-        margin: 0;
-        font-size: 14px;
-        opacity: 0.8;
-    }
+.config-btn {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-    .config-btn {
-        background: black;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-    }
+.container {
+    padding: 20px;
+}
 
-    .container {
-        padding: 20px;
-    }
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-    table {
-        width: 100%;
-        background: white;
-        border-collapse: collapse;
-        margin-top: 20px;
-        border-radius: 10px;
-        overflow: hidden;
-    }
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
 
-    th, td {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-        text-align: left;
-    }
+th {
+    background: #333;
+    color: white;
+}
 
-    th {
-        background: #333;
-        color: white;
-    }
+.status-normal { color: green; font-weight: bold; }
+.status-proximo { color: orange; font-weight: bold; }
+.status-aplicada { color: blue; font-weight: bold; }
+.status-atrasada { color: red; font-weight: bold; }
 
-    .status-normal { color: green; font-weight: bold; }
-    .status-proximo { color: orange; font-weight: bold; }
-    .status-aplicada { color: blue; font-weight: bold; }
-    .status-atrasada { color: red; font-weight: bold; }
+/* Popup */
+.popup-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
 
-    /* Popup */
-    .popup-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.6);
-        display: none;
-        justify-content: center;
-        align-items: center;
-    }
+.popup {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+}
 
-    .popup {
-        background: white;
-        width: 90%;
-        max-width: 400px;
-        padding: 20px;
-        border-radius: 10px;
-    }
+.popup input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 
-    .popup input {
-        width: 100%;
-        padding: 10px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
-    .btn {
-        padding: 10px 15px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
+.btn-save { background: #ff4da6; color: white; }
+.btn-close { background: #333; color: white; }
 
-    .btn-save { background: #ff4da6; color: white; }
-    .btn-close { background: #333; color: white; }
 </style>
 </head>
-<body>
-
-<header>
+<body><header>
     <div>
         <h1 id="titulo">Controle de Provas</h1>
         <h2 id="subtitulo">Psicologia</h2>
     </div>
     <button class="config-btn" onclick="abrirConfig()">⚙️ Configurações</button>
-</header>
-
-<div class="container">
+</header><nav style="background:#222;padding:10px;display:flex;gap:15px;">
+    <a href="#" onclick="abrirAba('provas')" style="color:white;">Provas</a>
+    <a href="#" onclick="abrirAba('pastas')" style="color:white;">Pastas</a>
+    <a href="#" onclick="abrirAba('notas')" style="color:white;">Bloco de Notas</a>
+</nav><div class="container" id="aba-provas">
     <table>
         <thead>
             <tr>
@@ -133,30 +131,24 @@
         </thead>
         <tbody id="tabela"></tbody>
     </table>
-</div>
-
-<!-- POPUP DE CONFIGURAÇÃO -->
-<div class="popup-bg" id="popup">
+</div><!-- POPUP DE CONFIGURAÇÃO --><div class="popup-bg" id="popup">
     <div class="popup">
         <h3>Configurações</h3>
         <label>Título</label>
-        <input type="text" id="cfgTitulo">
+        <input type="text" id="cfgTitulo"><label>Subtítulo</label>
+    <input type="text" id="cfgSubtitulo">
 
-        <label>Subtítulo</label>
-        <input type="text" id="cfgSubtitulo">
+    <label>Cor Primária</label>
+    <input type="color" id="cfgCor1">
 
-        <label>Cor Primária</label>
-        <input type="color" id="cfgCor1">
+    <label>Cor Secundária</label>
+    <input type="color" id="cfgCor2">
 
-        <label>Cor Secundária</label>
-        <input type="color" id="cfgCor2">
-
-        <button class="btn btn-save" onclick="salvarConfig()">Salvar</button>
-        <button class="btn btn-close" onclick="fecharConfig()">Fechar</button>
-    </div>
+    <button class="btn btn-save" onclick="salvarConfig()">Salvar</button>
+    <button class="btn btn-close" onclick="fecharConfig()">Fechar</button>
 </div>
 
-<script>
+</div><script>
 let provas = [
     {disciplina:"Psicologia Social", professor:"Stephane Juliana", data:"2025-11-18", status:"Aplicada"},
     {disciplina:"Psicofarmacologia", professor:"Renato Pennaforte", data:"2025-11-27", status:"Normal"},
@@ -214,37 +206,70 @@ function aplicarConfig() {
 }
 
 aplicarConfig();
-</script>
+</script><!-- ABA PASTAS --><div class="container" id="aba-pastas" style="display:none;">
+    <h2>Pastas</h2><label>Categoria:</label>
+<select id="categoriaDoc">
+    <option value="Declarações">Declarações</option>
+    <option value="Atas">Atas</option>
+    <option value="Documentos">Documentos</option>
+    <option value="Outros">Outros</option>
+</select>
 
-<!-- Aba Pastas e Bloco de Notas -->
-<div class="container">
-    <h2>Pastas</h2>
-    <input type="file" id="uploadDoc" multiple>
-    <button class="btn btn-save" onclick="salvarArquivos()">Salvar Arquivos</button>
-    <ul id="listaArquivos"></ul>
+<input type="file" id="uploadDoc" multiple>
+<button class="btn btn-save" onclick="salvarArquivos()">Salvar Arquivos</button>
 
+<h3>Arquivos</h3>
+<input type="text" id="buscaArquivo" placeholder="Buscar arquivo..." oninput="carregarArquivos()" style="width:100%;padding:8px;margin:8px 0;">
+
+<ul id="listaArquivos"></ul>
+
+</div><!-- ABA NOTAS --><div class="container" id="aba-notas" style="display:none;">
     <h2>Bloco de Notas</h2>
     <textarea id="blocoNotas" style="width:100%;height:150px;"></textarea>
     <button class="btn btn-save" onclick="salvarBloco()">Salvar Anotações</button>
-</div>
+</div><script>
+function abrirAba(aba){
+    document.getElementById('aba-provas').style.display='none';
+    document.getElementById('aba-pastas').style.display='none';
+    document.getElementById('aba-notas').style.display='none';
 
-<script>
-// Salvar arquivos
+    document.getElementById('aba-'+aba).style.display='block';
+}
+
+// Salvar arquivos com categoria e base64
 function salvarArquivos() {
     let arquivos = document.getElementById('uploadDoc').files;
-    let lista = [];
-    for (let a of arquivos) lista.push(a.name);
-    localStorage.setItem('arquivos', JSON.stringify(lista));
-    carregarArquivos();
+    let lista = JSON.parse(localStorage.getItem('arquivos') || '[]');
+    let categoria = document.getElementById('categoriaDoc').value;
+
+    Array.from(arquivos).forEach(arquivo => {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            lista.push({ nome: arquivo.name, conteudo: e.target.result, categoria: categoria });
+            localStorage.setItem('arquivos', JSON.stringify(lista));
+            carregarArquivos();
+        };
+        reader.readAsDataURL(arquivo);
+    });
 }
 
 function carregarArquivos() {
     let lista = JSON.parse(localStorage.getItem('arquivos') || '[]');
     let ul = document.getElementById('listaArquivos');
+    let filtro = document.getElementById('buscaArquivo').value.toLowerCase();
+
     ul.innerHTML = '';
-    lista.forEach(a => {
-        ul.innerHTML += `<li>${a}</li>`;
+
+    lista.filter(a => a.nome.toLowerCase().includes(filtro)).forEach(arq => {
+        ul.innerHTML += `<li><strong>[${arq.categoria}]</strong> <a href="${arq.conteudo}" download="${arq.nome}">${arq.nome}</a> <button onclick="deletarArquivo('${arq.nome}')">🗑</button></li>`;
     });
+}
+
+function deletarArquivo(nome){
+    let lista = JSON.parse(localStorage.getItem('arquivos') || '[]');
+    lista = lista.filter(a => a.nome !== nome);
+    localStorage.setItem('arquivos', JSON.stringify(lista));
+    carregarArquivos();
 }
 
 // Bloco de notas
@@ -258,6 +283,5 @@ function carregarBloco() {
 
 carregarArquivos();
 carregarBloco();
-</script>
-</body>
+</script></body>
 </html>
